@@ -1,0 +1,4009 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta name="vs_defaultClientScript" content="JavaScript">
+		<meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+		<meta name="CODE_LANGUAGE" content="Visual Basic .NET 7.1">
+		<meta name="vs_defaultClientScript" content="JavaScript">
+		<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>CD Direct</title>
+<style type="text/css">
+<!--
+BODY
+{
+	font-family: Arial, Helvetica,sans-serif;
+	font-size: 10pt;
+	color: #0B57A5;
+}
+
+.scan_name {
+	font-size: 8pt;
+	font-weight: bold;
+
+}
+.overall {
+	overflow: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 8pt;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+.action {
+	color: #2E3192;
+}
+.L_image {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+}
+.L_image_bold {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	font-weight: bold;
+}
+a:link {
+	color: #0B57A5;
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+	color: #0B57A5;
+}
+a:hover {
+	text-decoration: none;
+	color: #009FFF;
+}
+a:active {
+	text-decoration: none;
+	color: #0B57A5;
+}
+.style1 {color: #0B57A5}
+.imgShow
+{
+	display: block;
+	overflow: hidden;
+	position: static;
+}
+.reportShow
+{
+	display: block;
+	position: static;
+/*	width: 396px;*/
+	height: 100px;
+	overflow: hidden;
+	
+/*	display: inline;
+	clip: rect(400px auto auto 400px);
+	position: relative;	
+	
+/*	top: 20px;
+	left:20px;
+	width: 900px;
+	height: 600px;*/
+}
+.divMain
+{
+	overflow: auto;
+	display: block;
+	visibility: visible;
+	position: static;
+}
+.reportInnerHTML
+{
+	display: block;
+	/*overflow: auto;*/
+	position: static;
+	/*height: 300px;
+	width: 396px;
+	/*display: block;
+	overflow: auto;
+	position: static;*/
+}
+
+.reportBorder
+{
+	border-right: navy thin solid;
+	border-top: navy thin solid;
+	border-left: navy thin solid;
+	border-bottom: navy thin solid;
+}
+.reportNoBorder
+{
+	border-right:none;
+	border-top: none;
+	border-left: none;
+	border-bottom: none;
+}
+-->
+</style>
+
+<script language="JavaScript" type="text/JavaScript">
+	var image_width = new Array();//JPG_IMAGE_WIDTH = 600;
+	var image_height = new Array();//JPG_IMAGE_HEIGHT = 600;
+	var lastSer=0;
+	var lastImg=0;
+	var lastBkg=0;
+	var curStudy=0;
+	var curReport=0;
+	var i=0;
+	var j=0;
+	var z=0;
+	var iPatientIndex=0;
+	var isLoad=true;
+
+	var path = document.location.pathname;
+	var closeHelpMsgCounter = 0;
+//-----------Arrays------
+	var arrStdAccession = new Array();
+	var arrStudyInsUid =  new Array();
+	var arrStdMod = new Array();
+	var arrSeriesMod = new Array();
+	var arrSeriesPixelData = new Array();
+	var arrStdLinked = new Array();
+	var arrStdDate = new Array();
+	var intSeries = new Array();
+	var intReports = new Array();
+	var reportFileName = new Array();
+
+//----------parse-------
+
+	var _bpart="";
+	var _institution="Instituto Radiologico";
+	var intStudies = 0;	
+	var isSummary = false;	
+	var isMultiPatient = false;
+	var showMPT = true;
+	var showLTBX = false;
+	var ltbxCmdParams = "";
+
+//----------i18n------------
+	var	__Accession;
+	var __Study_List; 
+	var __Age;
+	var __Images;
+	var __Image;
+	var __Studies_Explorer;
+	var __Manipulate;
+	var __Done;
+	var __Loading;
+	var __Enlarge_Report;
+	var __View_All_Images;
+//----------------------
+	var nav = true;//(navigator.appName=="Microsoft Internet Explorer")?true :false;
+	var winNT = false;
+	var winOS = false;
+	if (navigator.appVersion.indexOf("Win")!=-1) winOS = true;
+	if (navigator.appVersion.indexOf("Windows NT")!=-1) winNT = true;
+	if (!winOS)
+	{
+	    showMPT = false;
+	    showLTBX = false;
+	} else if (!winNT)
+	{
+	    showMPT = false;
+	}
+	var m_canRunMP = false;
+	var m_pMP = null;
+	connectMP();
+//----------------------
+	var localHeight = screen.availHeight ;
+	var localWidth = screen.availWidth;
+	var shrinkReport = new Array();
+//----------------------	
+	var m_loadStudy;
+	var m_loadSeries;
+	var m_numOfSeriesSelected = 0;
+	var m_wholeStudySelected = false;
+	var externalReports = false;
+	var externalIcon = "";//"pdficon.gif" or "ext_rep.gif"
+
+//------------------------
+	var arrPicName = new Array();
+	var arrImgPerSeries = new Array();
+	var arrSeriesDesc = new Array();
+	var arrSeriesInsUid = new Array();
+	var arrPicLoad = new Array();
+	var _pname = new Array();
+	var _headerPName = new Array();
+	var _extReportName = new Array();
+	var _pid = new Array();
+	var _psex = new Array();
+	var _page = new Array();
+
+	
+//	_miniReportHeight=localHeight - 430;
+//	_miniReportWidth=396;	
+
+	
+
+		intStudies += 1;
+
+		
+
+			arrPicName[z] = new Array();
+			arrImgPerSeries[z] = new Array();
+			arrSeriesDesc[z] = new Array();
+			arrSeriesInsUid[z] = new Array();
+			arrPicLoad[z] = new Array();
+
+			_pname[z]  = "GARCIA DI LIZIO LUCIANA A ";
+			_headerPName[z] = "";
+			_extReportName[z] = "";
+			if (isMultiPatient)
+			{
+				_headerPName[z] = "GARCIA DI LIZIO LUCIANA A ";
+			}
+
+
+			_pid[z] = "34851414";
+			_psex[z] = "F";
+			_page[z] = "29";
+
+			i=0;
+			arrStdAccession[z]="200500030955";
+			arrStudyInsUid[z]="200500030955";
+			arrStdMod[z]="MR";
+			arrStdDate[z]="11/21/2018";	
+			arrSeriesMod[z] = new Array();
+			arrSeriesPixelData[z] = new Array();
+			arrStdLinked[z] = true;
+			intSeries[z]=20;
+			shrinkReport[z]=false;
+			image_width[z] = 600;
+			image_height[z] = 600;
+			
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.8252.2018112120285703014";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570365.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570375.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570377.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570378.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570380.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570382.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570384.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570386.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570388.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570390.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570392.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570393.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570395.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570397.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570399.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570400.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570402.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570404.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570406.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570408.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570409.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570411.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570413.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570415.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570417.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570419.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73563/5570421.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "Survey CAI";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120292001328";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570425.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570427.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570428.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570430.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570432.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570434.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570436.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570438.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570440.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570442.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570443.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570445.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570447.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570449.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570451.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570453.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570455.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570457.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570459.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570461.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570463.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570465.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570467.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570469.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570471.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570472.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570473.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570475.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570477.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570479.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570481.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570483.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570485.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570487.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570489.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570491.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570493.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570495.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570497.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570498.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570500.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570502.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570504.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73565/5570506.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "DWI_og";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120305540357";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570508.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570511.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570513.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570515.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570517.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570519.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570521.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570523.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570525.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570526.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570529.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570531.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570533.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570535.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570537.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570539.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570541.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570544.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570546.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570548.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570550.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570552.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570554.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570557.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570558.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570560.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570562.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570564.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570566.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570568.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570570.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570572.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570575.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570576.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570578.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570581.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570582.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570584.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570586.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570588.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570590.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570592.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570594.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73568/5570596.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "Reg - DWI_og";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5876.2018112120321801000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570598.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570602.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570604.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570606.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570608.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570610.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570612.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570614.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570616.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570617.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570619.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570621.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570623.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570625.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570627.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570629.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570631.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570633.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570635.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570637.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570639.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73569/5570641.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "dReg - DWI_og";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5444.2018112120322307000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570643.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570645.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570647.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570649.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570651.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570652.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570654.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570656.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570658.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570660.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570662.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570664.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570666.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570668.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570670.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570671.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570673.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570675.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570678.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570680.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570682.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73571/5570684.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "eReg - DWI_og";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5444.2018112120322308001";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570686.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570689.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570692.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570694.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570697.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570699.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570701.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570704.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570706.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570708.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570710.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570712.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570715.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570716.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570719.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570721.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570723.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570725.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570726.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570727.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570729.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570731.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570732.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570733.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570734.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570735.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570736.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73573/5570737.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "T2W_TSE TEST.";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120321227358";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570738.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570740.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570741.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570742.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570743.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570744.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570745.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570746.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570747.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570748.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570749.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570750.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570751.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570752.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570753.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570754.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570755.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570756.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570757.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570758.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570759.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570760.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570761.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570762.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570763.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570764.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570765.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570766.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570767.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570768.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570769.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570770.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570771.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570772.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570773.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570774.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570775.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570776.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570777.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570778.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570779.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570780.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570781.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570782.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570783.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570785.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570786.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570788.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570790.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570792.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570795.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570797.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570798.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570800.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570802.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570804.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570806.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570808.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570810.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570812.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570814.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570816.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570818.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570820.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570822.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570824.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570826.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570828.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570830.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570832.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570834.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570836.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570838.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570840.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570842.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570843.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570845.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570847.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570849.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570851.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570853.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570855.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570857.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570859.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570861.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570863.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570865.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570867.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570868.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570870.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570873.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570875.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570877.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570878.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570880.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570882.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570884.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570886.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570888.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570892.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570894.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570896.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570898.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570900.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570902.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570904.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570906.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570908.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570910.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570911.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570913.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570915.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570917.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570919.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570921.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570923.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570925.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570927.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570929.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570931.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570933.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570935.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570937.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570939.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570941.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570943.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570945.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570947.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570950.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570952.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570954.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570956.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570958.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570960.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570962.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570964.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570965.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570966.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570968.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570970.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570972.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570974.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570976.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570978.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570980.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570982.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570985.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570987.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570989.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570991.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570993.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570995.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5570998.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571000.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571002.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571004.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571005.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571008.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571010.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571012.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571014.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571016.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571018.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571020.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571022.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571023.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571025.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571027.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571029.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571031.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571033.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571035.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571037.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571038.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571040.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571042.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571044.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571047.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571049.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571051.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571052.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571054.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571056.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571058.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571059.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571061.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571063.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571065.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571067.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571070.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571072.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571074.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571076.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571078.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571080.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571082.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571084.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571086.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571088.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571092.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571094.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571095.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571096.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571097.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571099.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571101.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571103.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571106.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571108.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571110.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571112.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571114.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571115.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571117.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571119.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571121.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571123.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571125.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571127.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571129.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571131.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571133.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571134.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571136.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571138.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571140.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571142.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571144.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571146.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571147.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571149.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571151.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571153.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571155.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571157.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571159.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571161.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73578/5571163.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "3D_Brain_VIEW_FLAIR_Tra";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120342641433";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571165.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571167.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571169.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571170.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571172.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571174.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571176.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571178.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571180.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571182.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571184.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571186.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571188.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571190.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571192.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571194.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571196.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571198.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571200.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73589/5571203.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "V3D_Brain_VIEW_FLAIR_Tra";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5808.2018112120401040000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571205.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571208.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571210.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571212.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571214.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571217.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571219.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571221.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571223.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571225.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571228.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571230.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571232.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571234.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571236.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571238.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571240.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571242.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571244.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571246.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571248.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571251.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73591/5571253.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "_FLAIR_";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.14036.2018112120401373000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571255.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571259.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571261.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571262.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571264.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571266.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571268.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571270.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571272.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571274.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571277.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571279.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571281.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571283.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571285.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571288.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571290.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571292.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571293.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571295.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571297.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571299.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571301.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571303.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571305.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571308.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571310.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571312.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571314.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571316.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571318.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571320.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571323.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571324.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571326.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571328.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571330.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571332.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571335.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571337.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571339.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571341.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571343.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571345.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571347.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571349.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571351.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571353.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571355.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571357.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571359.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571361.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571363.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571364.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571365.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571367.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571369.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571371.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571374.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571375.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571378.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571380.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571382.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571384.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571386.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571388.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571390.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571393.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571395.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571396.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571398.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571400.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571403.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571406.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571408.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571409.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571411.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571413.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571415.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571417.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571419.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571421.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571423.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571425.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571428.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571430.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571433.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571434.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571436.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571438.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571440.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571443.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571445.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571446.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571449.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571451.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571453.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571455.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571457.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571459.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571461.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571463.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571465.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571467.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571469.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571471.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571475.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571477.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571479.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571481.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571483.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571485.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571487.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571489.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571491.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571493.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571495.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571499.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571501.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571503.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571505.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571507.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571509.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571511.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571513.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571515.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571516.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571518.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571520.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571522.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571524.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571526.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571528.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571530.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571533.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571534.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571536.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571538.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571540.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571542.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571544.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571548.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571550.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571552.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571554.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571556.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571557.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571559.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571561.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571563.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571565.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571567.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571569.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571571.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571573.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571575.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571577.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571579.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571581.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571583.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571585.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571587.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571589.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571591.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571592.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571594.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571596.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571598.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571600.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73592/5571602.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "sT1W_3D_IR_TFE_tra";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120400142434";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571605.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571609.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571611.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571613.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571615.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571617.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571619.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571621.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571623.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571625.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571627.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571629.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571631.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571633.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571636.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571638.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571640.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571642.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571645.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571647.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571649.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73595/5571651.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "VsT1W_3D_IR_TFE_tra";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.16872.2018112120442931000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571653.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571657.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571659.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571661.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571663.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571665.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571667.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571670.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571674.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571677.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571680.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571682.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571685.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571690.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571693.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73596/5571697.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "VsT1W_3D_IR_TFE_tra";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.13460.2018112120443282000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571701.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571706.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571709.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571712.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571715.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571718.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571721.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571725.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571727.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571732.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571735.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571738.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571741.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571744.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571747.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571751.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571754.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571758.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571761.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571764.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571767.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571770.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571774.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73599/5571776.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "COR";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.15596.2018112120443591000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571779.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571783.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571787.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571789.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571794.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571797.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571800.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571803.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571806.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571810.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571813.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571817.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571820.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571825.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571828.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571829.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571834.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571835.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571839.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571843.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571846.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571848.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571851.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73601/5571855.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "AX";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.13880.2018112120443906000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571858.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571864.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571867.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571869.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571871.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571875.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571877.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571880.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571883.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571886.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571890.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571893.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571897.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571900.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571903.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571905.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571907.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571909.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571911.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571913.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571915.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571917.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571919.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73603/5571920.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "SAG";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.10360.2018112120444220000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571925.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571926.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571929.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571932.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571934.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571936.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571938.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571940.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571943.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571946.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571950.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571952.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571955.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571958.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571962.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571965.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571969.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571971.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571977.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571979.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571982.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571986.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571989.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571993.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571996.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5571998.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572001.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572003.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572007.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572009.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572013.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572015.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572020.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572023.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572025.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572031.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572037.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572038.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572042.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572044.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572049.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572052.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572061.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572063.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572066.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572069.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572070.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572074.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572076.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572080.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572083.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572086.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572088.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572091.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572094.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572101.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572103.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572107.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572108.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572110.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572113.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572117.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572120.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572123.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572126.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572130.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572131.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572136.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572139.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572142.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572144.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572146.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572151.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572153.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572157.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572159.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572163.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572165.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572169.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572172.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572177.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572182.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572185.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572187.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572190.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572193.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572196.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572198.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572201.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572204.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572207.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572209.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572215.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572218.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572220.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572223.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572224.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572229.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572232.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572235.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572238.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572240.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572243.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572246.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572251.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572252.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572255.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572259.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572261.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572264.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572266.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572270.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572272.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572276.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572278.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572283.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572286.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572290.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572292.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572295.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572297.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572300.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572305.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572308.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572311.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572314.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572319.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572320.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572321.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572325.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572328.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572330.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572333.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572334.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572337.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572339.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572348.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572351.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572353.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572356.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572357.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572360.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572365.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572369.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572372.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572376.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572379.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572382.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572386.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572390.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572395.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572399.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572402.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572404.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572409.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572413.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572417.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572421.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572422.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572425.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572426.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572429.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572432.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572435.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572439.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572442.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572445.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572448.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572453.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572457.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572459.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572462.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572465.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572469.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572473.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572476.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572478.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572481.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572485.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572488.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572493.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572496.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572500.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572505.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572508.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572511.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572516.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572521.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572522.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572523.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572525.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572526.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572528.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572531.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572534.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572537.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572542.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572545.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572548.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572554.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572557.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572560.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572564.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572567.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572569.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572572.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572574.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572576.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572579.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572582.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572584.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572587.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572590.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572594.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572597.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572600.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572602.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572606.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572608.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572610.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572614.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572616.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572620.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572623.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572625.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572627.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572630.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572634.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572637.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572639.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572642.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572645.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572655.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572656.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572659.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572660.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572663.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572665.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572669.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572670.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572674.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572678.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572681.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572685.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572688.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572691.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572694.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572697.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572700.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572704.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572705.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572710.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572712.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572715.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572718.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572720.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572722.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572725.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572728.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73604/5572731.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "SWIp_fast";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120441779674";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572734.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572740.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572742.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572745.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572748.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572751.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572753.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572757.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572760.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572764.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572767.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572771.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572773.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572774.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572777.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572780.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572783.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572786.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572789.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572791.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572794.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572797.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572799.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572803.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572806.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572809.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572812.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572815.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572818.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572821.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572824.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572827.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572830.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572833.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572836.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572840.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572841.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572846.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572847.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572850.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572854.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572859.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572862.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572865.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572868.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572872.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572875.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572877.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572883.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572885.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572887.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572890.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572893.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572896.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572899.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572902.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572905.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572907.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572911.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572914.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572917.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572919.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572922.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572925.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572928.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572933.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572935.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572938.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572941.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572942.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572946.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572948.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572952.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572955.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572958.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572961.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572964.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572966.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572969.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572972.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572976.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572978.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572981.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572985.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572987.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572990.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572993.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5572995.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573000.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573004.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573006.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573010.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573014.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573017.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573020.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573021.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573025.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573026.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573030.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573033.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573038.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573041.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573043.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573047.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573049.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573052.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573054.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573058.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573059.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573062.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573065.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573069.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573071.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573074.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573077.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573079.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573082.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573086.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573088.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573090.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573091.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573093.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573095.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573098.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573101.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573104.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573112.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573116.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573120.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573123.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573126.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73611/5573130.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "s3DI_MC";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120463293847";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73616/5573132.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73616/5573140.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73616/5573142.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "MIP - s3DI_MC";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.5864.2018112120463297848";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+				j=0;
+				arrPicName[z][i] = new Array();
+				arrPicLoad[z][i] = new Array();
+
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573145.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573148.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573151.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573154.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573156.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573158.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573161.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573165.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573167.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573173.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573174.JPG";
+				
+					arrPicName[z][i][j++]= "../../../IHE_PDI/000/000/014/424/14444/73618/5573176.JPG";
+				
+
+				arrImgPerSeries[z][i] = j;
+				arrSeriesDesc[z][i] = "TRA";
+				arrSeriesInsUid[z][i] = "1.3.46.670589.11.71817.5.0.13476.2018112120495628000";
+				arrSeriesMod[z][i] = "MR";
+				arrSeriesPixelData[z][i] = true;
+				i++;
+			
+			z++;
+		
+	
+
+
+	function PrevReport()
+	{
+		curReport--;
+		document.getElementById('ReportFrame_'+curStudy).src=reportFileName[curStudy][curReport];
+		if (curReport == 0)
+			document.getElementById('next_report_'+curStudy).style.visibility = 'hidden';
+		document.getElementById('prev_report_'+curStudy).style.visibility = 'visible';
+	}
+	function NextReport()
+	{
+		curReport++;
+		if (curReport+1 >= intReports[curStudy])
+			document.getElementById('prev_report_'+curStudy).style.visibility = 'hidden';
+		document.getElementById('ReportFrame_'+curStudy).src=reportFileName[curStudy][curReport];
+		document.getElementById('next_report_'+curStudy).style.visibility = 'visible';
+	}
+
+	function initHelpMsg()
+	{
+		document.getElementById('divHelpMsg').style.width=400 + 'px';
+		document.getElementById('divHelpMsg').style.height=150 + 'px';
+		document.getElementById('divHelpMsg').style.left=localWidth/2 - 200 + 'px';
+		document.getElementById('divHelpMsg').style.top=200 + 'px';
+	}
+
+	function displayHelpMsg()	
+	{
+		document.getElementById('divHelpMsg').style.display="Block";
+	}
+
+	function closeHelpMsg()	
+	{
+		document.getElementById('divHelpMsg').style.display="none";
+	}
+
+	function CloseAndExit()	{
+		window.close();
+	}
+		function loadStudies(){
+		if (intStudies > 0)
+				loadImages(0);	
+	}
+
+
+	// this function will load all the images
+	//var intCounter=0;
+	function loadImages(stdNum){
+		if (document.images){
+			if (intSeries[stdNum] > 0)
+			{
+				loadWhat(0,0,stdNum);
+			}
+		}
+	}
+	
+	function loadWhat(i,j,stdNum){
+		if (isLoad){
+			if (j<arrImgPerSeries[stdNum][i] && j<50){
+				var img00 = new Image();
+				img00.src = arrPicName[stdNum][i][j];
+				arrPicLoad[stdNum][i][j] = img00.src;
+				j++;
+				setTimeout("loadWhat("+i+","+j+","+stdNum+")", 0);
+			} 
+			else
+			{
+				i++;
+				if (i<intSeries[stdNum]) //move to the next series:
+				{
+						j=0;
+						setTimeout("loadWhat("+i+","+j+","+stdNum+")", 0);
+				} else {
+						stdNum++;
+						if (stdNum< intStudies)
+						{
+								i=0;
+								j=0;
+								setTimeout("loadWhat("+i+","+j+","+stdNum+")", 0);
+						}
+				}
+			}	
+		}
+	}
+	
+	
+	//scroll images
+	function mouseWheel()
+	{
+		if (cineState != 1 && arrImgPerSeries[curStudy][lastSer] > 0)
+		{
+			var dx = event.wheelDelta ;
+			var sign = dx > 0 ? 1 : -1;
+			var nextImg = lastImg + sign;
+			if (nextImg < 0) 
+				nextImg = 0;
+			else if (nextImg >= arrImgPerSeries[curStudy][lastSer])
+				nextImg--;
+			switchImage(lastSer, nextImg);
+		}
+	}
+	
+	
+	
+	function nextImage(sign)
+	{//new function
+		var nextImg = lastImg + sign;
+		if (nextImg < 0) 
+			nextImg = 0;
+		else if (nextImg >= arrImgPerSeries[curStudy][lastSer])
+			nextImg--;
+		switchImage(lastSer, nextImg);
+	}
+
+	
+	
+	
+	function keydown()
+	{
+		if (cineState != 1)
+		{
+			var dx = event.keyCode;
+			var n=1;
+			
+			if (dx==39)//right key
+				nextImage(1);
+			else if (dx==37) // left key
+					nextImage(-1);
+				 else if (dx==38)//up key
+					  {
+						if (lastSer>0)
+						{
+							while (arrImgPerSeries[curStudy][lastSer - n] <= 0 && lastSer - n > 0)
+								n++;
+							if (lastSer - n >= 0)
+								switchImage(lastSer-n,0);
+					    }
+					  }
+					  else if (dx==40)//down key 
+						   {
+							if (lastSer<(intSeries[curStudy]-1))
+							{
+									while (arrImgPerSeries[curStudy][lastSer + n] <= 0 &&(lastSer + n) < (intSeries[curStudy]-1))
+										n++;
+									if ( (lastSer+n) < intSeries[curStudy] )
+										switchImage(lastSer+n, 0);
+								}
+						   }
+		}
+	}
+
+	
+	
+	
+	
+	
+	function displayFirstImage()
+	{	
+		var found=false;
+		for (var i=0;i<intSeries[0] && !found;i++)
+		{
+			if (arrImgPerSeries[curStudy][i] > 0)
+			{
+				switchImage(i,0);
+				found=true;
+			}
+		}		
+		if(!found){
+			document['imgPrev'].src = "";
+			document['imgPrev'].style.visibility = "hidden";
+			document['imgPrev'].style.height = (image_height[curStudy] + 1) + 'px';
+			document['imgPrev'].style.width = (image_width[curStudy] + 1) + 'px';
+
+			document.getElementById('spnImageNum').innerHTML = "";
+		}
+	}	
+
+	function mouseOver(sNum,pNum) 
+	{
+		if (cineState != 1)
+		{
+			switchImage(sNum, pNum);
+		}
+	}
+
+
+		// Loads Images on the fly (if not loaded yet)
+	function switchImage(sNum,pNum) {
+		var screenWidth = localWidth - image_width[curStudy] - 30;
+		var screenRes=Math.floor((screenWidth-42)/4);
+		
+		var x1 = Math.floor(lastImg/screenRes);		
+		var x2 = Math.floor(pNum/screenRes);		
+		if (lastBkg != 0)
+			document.getElementById('tblRollOver' + curStudy + lastSer + x1).rows[0].cells[lastImg%screenRes].style.background = lastBkg;//border='0';
+		lastBkg = document.getElementById('tblRollOver' + curStudy + sNum + x2).rows[0].cells[pNum%screenRes].style.background;
+		document.getElementById('tblRollOver' + curStudy + sNum + x2).rows[0].cells[pNum%screenRes].style.background = 'steelblue';//border='thin solid dimgray';
+	
+		if(!arrPicLoad[curStudy][sNum][pNum]) {
+				var img00 = new Image();
+				img00.src = arrPicName[curStudy][sNum][pNum];
+				arrPicLoad[curStudy][sNum][pNum] = img00.src;
+		}
+		lastImg=pNum;
+		lastSer=sNum;
+	
+		document['imgPrev'].src = arrPicLoad[curStudy][sNum][pNum];
+		document['imgPrev'].style.height = (image_height[curStudy] + 1) + 'px';
+		document['imgPrev'].style.width = (image_width[curStudy] + 1) + 'px';
+		document['imgPrev'].style.visibility = "visible";
+
+		document.getElementById('spnImageNum').innerHTML = pNum+1;
+
+//		closeHelpMsgCounter++;
+//		if (closeHelpMsgCounter > 1)
+//			closeHelpMsg();
+	}
+	
+	var _enlargeReport=true;
+	function enlargeReport(){
+		if (_enlargeReport && intReports[curStudy]>0){
+		
+			document.getElementById('divBackground').style.display="block";
+			document.getElementById('divBackground').style.height=localHeight + 'px';
+			document.getElementById('divBackground').style.width=localWidth+ 'px';
+
+
+			document.getElementById('tableInnerReport'+curStudy).style.width=(localWidth-90) + 'px';			
+
+			if (shrinkReport[curStudy])
+			{
+				document.getElementById('tblReportHeadLine'+curStudy).style.width = "354" + 'px';
+				document.getElementById('tblReportHeadLine'+curStudy).style.height = "68" + 'px';
+				document.getElementById('tblReportHeadLine'+curStudy).style.backgroundImage =  "url(big_rprt.gif)";
+				document.getElementById('reportHeadLineFont'+curStudy).style.fontSize = "25" + 'px';
+				document.getElementById('tblReportPatientDetails'+curStudy).width="100%" + 'px';
+				
+				for (var i=0;i<3;i++){
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[0].style.fontSize="11";
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[1].style.fontSize="11";
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[3].style.fontSize="11";
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[4].style.fontSize="11";
+				}
+			}
+		
+			document.getElementById('spanStdAccessionReport').innerHTML="["+arrStdAccession[curStudy]+"]";
+			document.getElementById('spanModReport').innerHTML=arrStdMod[curStudy];
+			document.getElementById('spanDateReport').innerHTML=arrStdDate[curStudy];
+			
+			document.getElementById('spanDivReport').style.display="block";		
+			document.getElementById('tblDivReport').className="reportBorder";
+			document.getElementById('tblReport').className="reportNoBorder";
+			
+			document.getElementById('divReport').style.position="absolute";
+			document.getElementById('divReport').style.top="10" + 'px';
+			document.getElementById('divReport').style.left="10" + 'px';
+			document.getElementById('divReport').style.width=localWidth-20 + 'px';
+			document.getElementById('divReport').style.height=localHeight-20 + 'px';
+			
+			
+
+			document.getElementById('divInnerReport'+curStudy).style.width=localWidth-30 + 'px';
+			document.getElementById('divInnerReport'+curStudy).style.height=localHeight-110 + 'px';
+
+			document.getElementById('ReportFrame_'+curStudy).src = reportFileName[curStudy][curReport];
+			document.getElementById('ReportFrame_'+curStudy).style.width=localWidth-30 -4 + 'px';
+			document.getElementById('ReportFrame_'+curStudy).style.height=localHeight-110 -40 + 'px';
+			document.getElementById('ReportFrame_'+curStudy).style.overflow="visible";
+			
+			if (intReports[curStudy] > 1)
+			{
+				if (curReport == 0)
+					document.getElementById('next_report_'+curStudy).style.visibility = 'hidden';
+				else
+					document.getElementById('next_report_'+curStudy).style.visibility = 'visible';
+				
+				if (curReport+1 >= intReports[curStudy])
+					document.getElementById('prev_report_'+curStudy).style.visibility = 'hidden';
+				else
+					document.getElementById('prev_report_'+curStudy).style.visibility = 'visible';
+			}
+
+			document.getElementById('divReport').style.overflow="hidden";
+
+			document.getElementById('divInnerReport'+curStudy).style.display="block"
+			document.getElementById('ReportFrame_'+curStudy).style.display="block"
+
+		}else{
+			if (shrinkReport[curStudy]){
+				document.getElementById('tblReportHeadLine'+curStudy).style.backgroundImage =  "url(sml_rprt.gif)";
+				document.getElementById('tblReportHeadLine'+curStudy).style.width = "210" + 'px';
+				document.getElementById('tblReportHeadLine'+curStudy).style.height = "40" + 'px';
+				document.getElementById('reportHeadLineFont'+curStudy).style.fontSize = "14" + 'px';
+				
+				for (var i=0;i<3;i++){
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[0].style.fontSize="9";
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[1].style.fontSize="9";
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[3].style.fontSize="9";
+					document.getElementById('tblReportPatientDetails'+curStudy).rows[i].cells[4].style.fontSize="9";
+				}
+			}
+			
+			document.getElementById('spanStdAccession').innerHTML=arrStdAccession[curStudy];
+			document.getElementById('spanMod').innerHTML=arrStdMod[curStudy];
+			document.getElementById('spanDate').innerHTML=arrStdDate[curStudy];
+							
+			document.getElementById('tblDivReport').className="reportNoBorder";
+			document.getElementById('tblReport').className="reportBorder";
+			
+			
+			//document.getElementById('divReport').style.overflow="auto";
+			
+			document.getElementById('divReport').style.position="static";
+			document.getElementById('divReport').style.width= image_width[curStudy] - 4 + 'px';
+			document.getElementById('divReport').style.height = localHeight - image_height[curStudy] - 30 + 'px';
+
+
+			if (intReports[curStudy]>0){			
+				document.getElementById('tableInnerReport'+curStudy).style.width=(image_width[curStudy] - 4 -20) + 'px';
+				document.getElementById('divReport').style.overflow="hidden";
+				document.getElementById('divInnerReport'+curStudy).style.width=image_width[curStudy] - 4 + 'px';//-40;
+				document.getElementById('divInnerReport'+curStudy).style.height = localHeight - image_height[curStudy] - 30 + 'px';
+				document.getElementById('tableInnerReport'+curStudy).style.width=image_width[curStudy] - 4 -20 + 'px';//-80;
+
+				document.getElementById('ReportFrame_'+curStudy).src = reportFileName[curStudy][curReport];
+				document.getElementById('ReportFrame_'+curStudy).style.width=image_width[curStudy] - 4 - 4 + 'px';//-40;
+				document.getElementById('ReportFrame_'+curStudy).style.height = localHeight - 40 - image_height[curStudy] - 30 + 'px';
+
+			}
+
+
+			document.getElementById('mainDiv'+ curStudy).style.width=localWidth - image_width[curStudy] + 'px';			
+			document.getElementById('mainDiv'+ curStudy).style.height=localHeight-130 + 'px';			
+			document.getElementById('mainDiv'+ curStudy).style.display = "block";
+			
+			document.getElementById('spanDivReport').style.display="none";
+			document.getElementById('divBackground').style.display="none";
+			document.getElementById('innerImgTable').style.height = image_height[curStudy] + 'px';
+			document.getElementById('innerImgTable').style.width = image_width[curStudy] + 'px';
+
+			document.getElementById('enlarge_report_tab').style.width = image_width[curStudy] + 'px';
+			document.getElementById('enlarge_report_tab').style.backgroundPosition = "bottom right";
+			document.getElementById('enlarge_report_tab').style.backgroundRepeat = "no-repeat";
+			document.getElementById('L_image_tab').style.width = image_width[curStudy] + 'px';
+			document.getElementById('L_image_tab').style.backgroundPosition = "top left";
+			document.getElementById('L_image_tab').style.backgroundRepeat = "no-repeat";
+			
+		}
+		_enlargeReport=!_enlargeReport;
+	}
+	
+	
+	function load_link()
+	{
+
+			document.write("<td>");
+                        document.write("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" ID=\"TableLaunchBottom\">");
+			document.write("<tr>");
+
+			document.write("<td width='10px' </td>");
+			document.write("<td width='60px' style=\"FONT-WEIGHT: bold; FONT-SIZE: x-large; BACKGROUND-POSITION: center left; BACKGROUND-REPEAT: no-repeat \" height='44px' align='left' valign='center' bgcolor=#FFFFFF>");
+			document.write("<a valign='absmiddle' style=\"FONT-WEIGHT: bold;FONT-SIZE: small;\" ><img src='Mglass.gif' width='12' height='12' border='0' valign='absmiddle'>&nbsp;Launch:</a>");
+			document.write("</td>");
+			if(showLTBX)
+			{
+				document.write("<td >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>");
+				document.write("<td width='130px' style=\"FONT-WEIGHT: bold; FONT-SIZE: x-large; BACKGROUND-POSITION: center left; BACKGROUND-REPEAT: no-repeat \" height='44px' align='left' valign='center' bgcolor=#FFFFFF background='BTN_SM.GIF' nowrap>");
+				document.write("<a title='View DICOM Images of Selected Series' align='absmiddle' valign='absmiddle' style=\"FONT-WEIGHT: bold;FONT-SIZE: small;\" href=\"javascript:loadLTBX()\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Light Viewer</a>");
+				document.write("</td>");
+			}
+			if (showMPT)
+			{
+				document.write("<td >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>");
+				document.write("<td width='130px' style=\"FONT-WEIGHT: bold; FONT-SIZE: x-large; BACKGROUND-POSITION: center left; BACKGROUND-REPEAT: no-repeat \" height='44px' align='left' valign='center' bgcolor=#FFFFFF background='BTN_SM.GIF' nowrap>");
+				document.write("<a title='View DICOM Images of Selected Series' align='absmiddle' valign='absmiddle' style=\"FONT-WEIGHT: bold;FONT-SIZE: 13px;\" href=\"javascript:loadMP()\">&nbsp;&nbsp;Advanced Viewer</a>");
+				document.write("</td>");
+			}			
+			document.write("</tr>");
+			document.write("</table>");
+			document.write("</td>");
+
+	}
+
+	function loadLTBX()
+	{
+
+		isLoad = false;								
+//		closeHelpMsg();
+
+		buildSeriesLst(false, 1);
+
+		if (m_numOfSeriesSelected > 0)
+			setTimeout("openLTBX()", 1);
+
+	}
+
+	function openLTBX()
+	{
+		// use CDStart to run MP:
+		try
+		{
+			m_pMP.OpenLtbx(m_loadStudy,m_loadSeries, ltbxCmdParams);		
+			splashScreen();
+		} catch(e)
+		{
+		}
+	}
+
+
+	function buildSeriesLst(include_non_pixel_data_series, max_serieses)
+	{
+		m_numOfSeriesSelected = 0;	
+		m_wholeStudySelected = (intSeries[curStudy] > 0);
+		var series = "";
+		for (var i=0;i<intSeries[curStudy];i++)
+		{  
+			if (document.getElementById('chk'+curStudy+'s'+i).checked == true)
+			{
+				if (include_non_pixel_data_series || arrSeriesPixelData[curStudy][i])
+				{
+					if (m_numOfSeriesSelected)
+						series += "\\";
+					m_numOfSeriesSelected++;
+					series += arrSeriesInsUid[curStudy][i];	
+					
+					//limit number of serieses
+					if(max_serieses >= 0 && m_numOfSeriesSelected == max_serieses){
+						break;
+					}
+				} 
+			} else
+				m_wholeStudySelected = false;
+		}
+		if (m_numOfSeriesSelected)
+		{
+			document.getElementById('divLoading').style.display="block";
+			stopCine();
+			m_loadStudy = arrStudyInsUid[curStudy];
+			m_loadSeries = series;
+		}
+		else
+		{
+			alert("Please Select Series.");
+		}
+
+	}
+
+
+	function loadMP()
+	{
+		isLoad = false;								
+//		closeHelpMsg();
+
+		buildSeriesLst(true, -1);
+		if (m_wholeStudySelected)
+			m_loadSeries = "";
+		if(m_numOfSeriesSelected){
+			setTimeout("loadDicom()", 1);
+		}
+	
+	}	
+
+	function loadDicom()
+	{
+		// use CDStart to run MP:
+		try
+		{
+			m_pMP.ShowStudy(m_loadStudy,m_loadSeries);		
+			splashScreen();
+		} catch(e)
+		{
+		}
+	}
+
+// unload CDStart ( will unload MP):
+	function onclose()
+	{
+		try
+		{
+			m_pMP.Unload();
+		} catch(e)
+		{
+		}
+	}
+
+// connect object to CDStart:
+	function connectMP()
+	{
+		if(m_pMP == null && winOS)
+		{
+			try{
+				m_pMP =  new ActiveXObject("CDStart.CDStart_CD");
+				m_canRunMP = m_pMP.CanRunMP();
+				if (!m_canRunMP)//not enough memory to run mp
+					showMPT = false;
+			} catch(e) {
+				showMPT = false;
+				showLTBX = false;
+			}
+		}
+			
+	}
+
+
+
+	var cineState=0;
+	var my_timer;
+	var cineSeries=0;
+
+	function stopCine()
+	{
+		cineState=0;
+		window.clearTimeout(my_timer);
+		document.getElementById('cineImage'+curStudy+'s'+cineSeries).src = "cineplay.jpg";
+		document.getElementById('cineImage'+curStudy+'s'+cineSeries).title = "Play Cine";
+	}
+	function startCine(seriesNum)
+	{
+		if (arrImgPerSeries[curStudy][seriesNum] > 0)
+		{
+	   	     cineState=1;
+	  	     cineSeries=seriesNum;
+		     document.getElementById('cineImage'+curStudy+'s'+cineSeries).src = "cinestop.jpg";
+		     document.getElementById('cineImage'+curStudy+'s'+cineSeries).title = "";
+		     switchImage(cineSeries, 0);
+		     my_timer=window.setTimeout("cineNext()",150);	
+		}
+	}
+	
+	function cineNext()
+	{
+		
+		if (lastImg>= arrImgPerSeries[curStudy][lastSer]-1)
+		{
+			stopCine();
+		} else {
+			switchImage(lastSer, lastImg+1);
+			my_timer=window.setTimeout("cineNext()",150);			
+		}
+	}
+	
+	function cine(seriesNum)
+	{
+		if (cineState==0)
+		{
+			startCine(seriesNum);
+
+		} else {
+			if (seriesNum != cineSeries)
+			{
+				stopCine();
+				startCine(seriesNum);
+			} else {			
+				stopCine();
+			}
+		}
+	}
+	
+	function CheckAll()
+	{
+			for (var i=0;i<intSeries[curStudy];i++)
+			{  
+				document.getElementById('chk'+curStudy+'s'+i).checked = true;
+			}
+	}
+
+	function UncheckAll()
+	{
+			for (var i=0;i<intSeries[curStudy];i++)
+			{  
+				document.getElementById('chk'+curStudy+'s'+i).checked = false;
+			}
+	}
+
+	function splashScreen()
+	{
+		var ret ;
+		try
+		{
+			ret = m_pMP.Active();
+			if (ret != "active") {
+				setTimeout("splashScreen()", 1000);
+			} else {
+				closeLoadingSplash();
+			}
+		} catch(e)
+		{
+			closeLoadingSplash();
+		}
+	}
+
+	
+	function closeLoadingSplash()
+	{
+		document.getElementById('divLoading').style.display="none";
+	}
+
+	function windowMax(){	
+		// move the lines from here to onLoad()
+		try {
+			window.moveTo(0,0);
+			window.resizeTo(screen.width,screen.height);		
+		} catch (e) {}
+	}
+	
+	//onLoad
+	function onLoad(){
+
+		document.getElementById('divLoading').style.width=400;
+		document.getElementById('divLoading').style.height=200;
+		document.getElementById('divLoading').style.left=localWidth/2 - 200;
+		document.getElementById('divLoading').style.top=150;
+		
+		initHelpMsg();
+		windowMax();
+
+		if (intStudies==1 && externalReports == false){// external reports links are in the studies list page (even if there is only one study)
+			document.getElementById('stdExplorer').style.display="none";
+			switchStudies(0);
+		} else
+			switchStudies(-1);
+
+		loadStudies();
+
+	}
+	
+	// this function will switch between studies
+	function switchStudies(stdNum){
+		var screenRes=Math.floor((localWidth - image_width[curStudy] - 30 - 42)/4);
+		if (lastBkg != 0)
+			document.getElementById('tblRollOver'+curStudy+lastSer+ Math.floor(lastImg/screenRes)).rows[0].cells[lastImg%screenRes].style.background = lastBkg ;//border='0';
+		lastBkg = lastImg = lastSer = 0;
+		curReport = 0;
+
+		if (stdNum==-1){
+		
+			document.getElementById('divBackground').style.display="block";
+			document.getElementById('divBackground').style.height=localHeight+'px';
+			document.getElementById('divBackground').style.width=localWidth+'px';		
+		
+			document.getElementById('tblStudiesList').style.width=localWidth-100 + 'px';	
+			document.getElementById('divOverFlow').style.width=localWidth-30 + 'px';
+			document.getElementById('divOverFlow').style.height = localHeight-130 + 'px';
+			document.getElementById('tblInnerStudy').style.height = localHeight-130 + 'px';
+			
+			document.getElementById('tblInnerStudy').style.width=localWidth-30 + 'px';
+
+			document.getElementById('allImages').style.display = "none";
+			
+			document.getElementById('divStudies').style.display="block";
+			
+			document.getElementById('spanStdAccessionReport').innerHTML="";
+			document.getElementById('spanModReport').innerHTML="";
+			document.getElementById('spanDateReport').innerHTML="";
+
+			if (isMultiPatient)
+			{
+				document.getElementById('spanHeaderPName').innerHTML= "Multi-Patients";
+				document.getElementById('spanHeaderPID').innerHTML= "";
+				document.getElementById('spanHeaderPSex').innerHTML="";									
+				document.getElementById('spanAgeTitle').innerHTML="";									
+				document.getElementById('spanHeaderPAge').innerHTML="";									
+			}
+			else
+			{
+				document.getElementById('spanHeaderPName').innerHTML= _pname[0];
+				document.getElementById('spanHeaderPID').innerHTML= _pid[0];
+				document.getElementById('spanHeaderPSex').innerHTML= _psex[0];							
+				document.getElementById('spanAgeTitle').innerHTML=  "Age:";									
+				document.getElementById('spanHeaderPAge').innerHTML= _page[0];									
+			}
+			
+			document.getElementById('spanDivReport').style.display="block";		
+			document.getElementById('tblDivReport').className="reportBorder";
+			document.getElementById('tblReport').className="reportNoBorder";
+			document.getElementById('divReport').style.position="absolute";
+			document.getElementById('divReport').style.top="10" + 'px';
+			document.getElementById('divReport').style.left="10" + 'px';
+			document.getElementById('divReport').style.width=localWidth-20 + 'px';
+			document.getElementById('divReport').style.height=localHeight-20 + 'px';
+
+			document.getElementById('divReport').style.overflow="hidden";
+			
+			for (var i=0;i<intStudies;i++)
+			{
+				if (intReports[i] > 0)
+					document.getElementById('divInnerReport'+i).style.display="none";
+			}
+			
+		}
+		else{		
+			// set vars according to modality image size:
+//			displayHelpMsg();
+			
+			document.getElementById('imgPrev').style.height = (image_height[stdNum] + 1) + 'px';
+			document.getElementById('imgPrev').style.width = (image_width[stdNum] + 1) + 'px';
+
+			document.getElementById('divImage').style.width = image_width[stdNum] + 'px';
+			document.getElementById('divImage').style.height = image_height[stdNum] + 'px';
+			document.getElementById('imgTable').style.width = image_width[stdNum] + 'px';
+			document.getElementById('innerImgTable').style.height = image_height[stdNum] + 'px';
+
+			document.getElementById('divStudies').style.display="none";	
+
+			document.getElementById('tblDivReport').className="reportNoBorder";
+			document.getElementById('tblReport').className="reportBorder";
+			document.getElementById('divReport').style.overflow="auto";
+			document.getElementById('divReport').style.position="static";
+			document.getElementById('divReport').style.width= image_width[stdNum] - 4 + 'px';
+			document.getElementById('divReport').style.height = localHeight - image_height[stdNum] - 30 + 'px';
+
+			document.getElementById('mainDiv'+ curStudy).style.width=localWidth - image_width[curStudy] + 'px';			
+			document.getElementById('mainDiv'+curStudy).style.height=localHeight-42 + 'px';
+			
+			document.getElementById('spanDivReport').style.display="none";
+			document.getElementById('divBackground').style.display="none";
+
+
+			curStudy=stdNum;
+			displayFirstImage();
+
+			
+			for (var i=0;i<intStudies;i++)
+				document.getElementById('mainDiv'+i).style.display="none";
+
+			if (isMultiPatient)
+			{
+				document.getElementById('spanHeaderPName').innerHTML= _pname[stdNum];
+				document.getElementById('spanHeaderPID').innerHTML= _pid[stdNum];
+				document.getElementById('spanHeaderPSex').innerHTML= _psex[stdNum];
+				document.getElementById('spanAgeTitle').innerHTML=  "Age:";									
+				document.getElementById('spanHeaderPAge').innerHTML= _page[stdNum];
+			}
+
+			document.getElementById('allImages').style.display = "block";
+			document.getElementById('mainDiv'+stdNum).style.display="block";
+			document.getElementById('spanStdAccession').innerHTML=arrStdAccession[curStudy];
+			document.getElementById('spanMod').innerHTML=arrStdMod[curStudy];
+			document.getElementById('spanDate').innerHTML=arrStdDate[curStudy];
+			document.getElementById('spanStdPName').innerHTML=_pname[stdNum];
+			document.getElementById('spanStdPID').innerHTML=_pid[stdNum];
+			document.getElementById('spanStdPAge').innerHTML=_page[stdNum];
+			document.getElementById('spanStdPSex').innerHTML=_psex[stdNum];
+
+			
+			// --------- reports handling --------------
+			//document.getElementById('divInnerReport'+curStudy).style.display="none";
+			
+			if (intReports[curStudy]>0){
+				document.getElementById('ReportFrame_'+curStudy).style.display="none";
+
+				document.getElementById('divInnerReport'+stdNum).style.display="block";
+				document.getElementById('divInnerReport'+curStudy).style.overflow="hidden";			
+				document.getElementById('divInnerReport'+curStudy).style.width=image_width[curStudy] - 4 -40 + 'px';
+				document.getElementById('divInnerReport'+curStudy).style.height= localHeight - image_height[curStudy] - 30 + 'px';
+
+				document.getElementById('ReportFrame_'+curStudy).style.display="block";
+				document.getElementById('ReportFrame_'+curStudy).style.overflow="hidden";			
+				document.getElementById('ReportFrame_'+curStudy).src = reportFileName[curStudy][curReport];
+				document.getElementById('ReportFrame_'+curStudy).style.width=image_width[curStudy] - 4 - 4 -40 + 'px';
+				document.getElementById('ReportFrame_'+curStudy).style.height= localHeight - 40 - image_height[curStudy] - 30 + 'px';
+				document.getElementById('enlarge_report_tab').style.display="block";
+			}
+			else
+			{
+				document.getElementById('enlarge_report_tab').style.display="none";
+			}
+			_enlargeReport=true;
+			enlargeReport();
+		}
+	}
+	
+	function setLang (){
+		//if (navigator.appName == 'Netscape')
+			//var language = navigator.language;
+		//else
+			//var language = navigator.browserLanguage;
+
+		language = document.defaultCharset;
+		alert(language);
+
+		if (language.indexOf("1255")>-1){ // hebrew
+		}
+		else if (language.indexOf("")>-1){
+		}
+		else {
+			__Accession="Accession";
+			__Study_List="Study List";
+			__Age="Age";
+			__Images="Images";
+			__Image="Image";
+			__Studies_Explorer="studies Explorer";
+			__Manipulate="Manfipulate";
+			__Done="Done";
+			__Loading="Loading";
+			__Enlarge_Report="Enlarge Report";
+			__View_All_Images="View All Images";
+		}
+	
+	}
+	
+</script>
+	</head>
+	<body onunload='onclose()' onkeydown='keydown()' class="overall" onload="onLoad()" scroll="no">
+		<!-- background div -->
+		<div id="divBackground" style="filter:Alpha(Opacity=80); overflow: none;position: absolute; display: none;background-color: #e9e9e7;"></div>
+		<!-- Help Msg splash div-->
+			<div class="reportBorder" id="divHelpMsg" style="DISPLAY: none;POSITION: absolute; BACKGROUND-COLOR: white">
+				<table width=100% cellpadding=0 cellspacing=0 border=0 ID="Table10">
+				<tr style="BACKGROUND-COLOR: #EA7125">
+					<td style="FONT-WEIGHT: bold; FONT-SIZE: medium; COLOR: red;  TEXT-ALIGN: center"><b>?</b></td>
+					<td align=left><img src="topback.gif"></td>
+					<td align=right>
+						<a href="javascript:closeHelpMsg()">&nbsp;&nbsp;<img src='close.gif' width='12' height='12' border='1' align='absmiddle'>&nbsp;&nbsp;</a>
+					</td>
+				</tr>
+				</table>
+				<table width=100% height="100%" cellpadding=0 cellspacing=0 border=0 ID="Table11" >
+				<tr><td style="FONT-SIZE: small; COLOR: navy; TEXT-ALIGN: center" align=center >
+							<b>Move the mouse over the Scan Representations bars. </b><br><b> Or use Arrow Keys for Navigation.</b>
+					</td></tr>
+				<tr><td align=center valign=top><img src="STRIPE_A.JPG"</td></tr>
+				</table>
+			</div>
+		<!-- loading splash div-->
+			<div class="reportBorder" id="divLoading" style="DISPLAY: none;FILTER: Alpha(Opacity=90);POSITION: absolute; BACKGROUND-COLOR: white">
+				<table width=100% cellpadding=0 cellspacing=0 border=0 ID="Table8">
+				<tr bgcolor="EA7125"><td align=left><img src="topback.gif"></td><td align=right>
+					<a href="javascript:closeLoadingSplash()">&nbsp;&nbsp;<img src='close.gif' width='12' height='12' border='1' align='absmiddle'>&nbsp;&nbsp;</a>
+				</td></tr>
+				</table>
+				<table width=100% height="100%" cellpadding=0 cellspacing=0 border=0 ID="Table9" 
+					style="BACKGROUND-POSITION: center 75%; BACKGROUND-ATTACHMENT: fixed; BACKGROUND-IMAGE: url(loading.gif); BACKGROUND-REPEAT: no-repeat">
+				<tr><td style="FONT-SIZE: xx-large; COLOR: red; TEXT-ALIGN: center" align=center >
+							<b> Loading</b>
+					</td></tr>
+				</table>
+			</div>
+			
+		<table cellpadding="0" cellspacing="0" width="100%" border="0" ID="Table3">
+			<tr>
+				<td ID="imgTable" valign="top">
+					<table height="100%" border="0" align="left" cellpadding="0" cellspacing="0" ID="Table4">
+						<!-- Start: Preview Image -->
+						<tr>
+							<!-- -->
+							<td ID="innerImgTable" onMouseWheel="javascript:mouseWheel()" colspan="2" align="left" valign="top" scope="col" bgcolor="black">
+								<div class="imgShow" id="divImage"><img name="imgPrev"
+										id="imgPrev"></div>
+							</td>
+						</tr>
+						<!-- FIX TAMIR -->
+						<tr>
+							<td height="24" id="L_image_tab" valign="top" background="LBg.gif" align="left"
+								scope="row"><span class="L_image">&nbsp;Lossy Image&nbsp;#&nbsp;</span><span class="L_image_bold" id="spnImageNum"></span>
+							</td>
+							<!-- End: Preview Image -->
+							<!-- Start: Reports -->
+							<td height="24" id="enlarge_report_tab" valign="bottom" background="RBg.gif" align="right">
+								<a href="JavaScript:enlargeReport()"><b><u>Enlarge Report</u></b><img src="er.gif" border=0></a>
+							</td>								
+						</tr>
+						<!-- FIX TAMIR -->
+						<tr>
+							<td colspan="2" scope="row">
+								<table class="reportBorder" bgcolor="white" cellpadding="0" cellspacing="0" ID="tblReport">
+									<tr>
+										<td>
+											<div class="reportShow" id="divReport">
+												<table bgcolor="white" height="110" border="0" cellpadding="0" cellspacing="0" ID="tblDivReport">
+													<tr>
+														<td>
+															<span id="spanDivReport" style="display: none;">
+																<table width="100%" border="0" cellpadding="0" cellspacing="0" ID="Table5">
+																	<tr bgcolor="#EA7125">
+																		<td nowrap>&nbsp;&nbsp;<script language="JavaScript" type="text/JavaScript">document.write("<a href=\"LinkPage.htm\" target=\"_blank\">"+_institution+"</a> - <span id =\"spanHeaderPName\"></span>&nbsp;&nbsp;<span id =\"spanHeaderPID\"></span>");</script></td>
+																		<td width="1"><img src="HeaderSp.gif" width="1" height="24"></td>
+																		<td nowrap>&nbsp;
+																			<span id ="spanHeaderPSex"></span>&nbsp;
+																			<span id ="spanAgeTitle"></span>
+																			<span id ="spanHeaderPAge"></span>
+																		<td nowrap>&nbsp;&nbsp;<script language="JavaScript" type="text/JavaScript">document.write(_bpart+" ");</script><span id="spanModReport"></span>&nbsp;<span id="spanStdAccessionReport"></span></td>
+																		<td width="1"><img src="HeaderSp.gif" width="1" height="24"></td>
+																		<td nowrap>&nbsp;&nbsp;<span id="spanDateReport"></span></td>
+																		<td width="1"><img src="HeaderSp.gif" width="1" height="24"></td>
+																		<td nowrap align="right">&nbsp;&nbsp;&nbsp;&nbsp;<img src="CARESTREAM_SMALL.GIF" width="73" height="18" align="absmiddle">
+																			<a href="javascript:CloseAndExit()">&nbsp;&nbsp;<img src='close.gif' width='12' height='12' border='1' align='absmiddle'>&nbsp;&nbsp;</a>
+																		</td>
+																		<td nowrap>&nbsp;</td>
+																	</tr>
+																</table>
+																<br>
+																<center id="allImages">
+																	<table cellpadding=0 width="300" height="26" cellspacing=0 border=0 background="all_imgs.gif" ID="Table6"><tr><td align="center"><a href="javascript:enlargeReport();"><b>View Study Images</b></a></td></tr></table>
+																</center>
+																<br>
+															</span>
+
+<div id="divStudies" style="display:none;">
+	<table border="0" cellpadding="0" cellspacing="0" ID="tblInnerStudy">
+	<tr><td  bordercolor="#FFFFFF" valign=top>
+		&nbsp;&nbsp;Studies List<p>
+		<hr color="#C5821E" size="1">
+		<div id="divOverFlow" style="overflow:auto">
+			<table border="0" cellpadding="0" bordercolor="#C5821E" bgcolor="#FFFFFF" ID="tblStudiesList">
+			<tr>
+				<td bordercolor="#FFFFFF" valign=top>
+					<script language="JavaScript" type="text/JavaScript">			
+						for (var i=0;i<intStudies;i++){
+						document.write("&nbsp;&nbsp;&nbsp;<img src='SL.gif' width='11' height='15' align='texttop'>&nbsp;&nbsp;");
+						if(arrStdLinked[i]){
+							document.write("<a href='javascript:switchStudies("+i+")'>");
+						}
+						document.write(_headerPName[i]+" "+arrStdMod[i]+" [Accession "+arrStdAccession[i]+"] &nbsp;"+arrStdDate[i]);
+						if(arrStdLinked[i]){
+							document.write("</a>");
+						}
+						document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+						if (externalReports)
+								document.write("<img src='"+externalIcon +"' width='11' height='15' align='texttop'>&nbsp;&nbsp;<a href='"+_extReportName[i]+"' onclick=\"window.open(this.href); return false;\">"+ _extReportName[i]+"</a>");
+						document.write("<br><br>");
+						}
+					</script>
+				<br></td>
+			</tr>
+			</table>
+		</div>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<script language="JavaScript" type="text/JavaScript">
+z=0;
+var r;
+
+
+	r=0;
+	reportFileName[z] = new Array();
+	
+	intReports[z]=r;
+	if (r > 0)
+	{
+		document.write("<div class='reportInnerHTML' style='display: none' id='divInnerReport"+z+"'>");
+		document.write("<table id='tableInnerReport"+z+"' align='center'>");
+		document.write("<tr><td>");
+		if (r > 1)
+		{
+			document.write("<table width=\"100%\"><tr><td align=left>");
+			document.write("<table id='prev_report_"+z+"'  cellpadding=0 width=\"126\" height=\"26\" cellspacing=0 border=0 background=\"BTN_SM.gif\" > ");
+			document.write("<tr><td align=\"center\" class=\"scan_name\"><a href=\"javascript:NextReport();\"><b><< PREV REPORT</b></a></td></tr></table></td>");
+			document.write("<td align=right><table id='next_report_"+z+"' style=\"VISIBILITY: hidden\" cellpadding=0 width=\"126\" height=\"26\" cellspacing=0 border=0 background=\"BTN_SM.gif\" > ");
+			document.write("<tr><td align=\"center\" class=\"scan_name\"><a href=\"javascript:PrevReport();\"><b>NEXT REPORT >></b></a></td></tr></table></td></tr></table>");
+			document.write("</td></tr>");
+			document.write("<tr><td>");
+		}
+		document.write("<iframe id='ReportFrame_"+z+"' name='ReportFrame_"+z+"' src='" + reportFileName[z][0] +"' frameborder=0 ></iframe>");
+		document.write("</td></tr></table></div>");
+	}
+	z++;
+
+
+</script>
+
+														</td>
+													</tr>
+												</table>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<!-- End: Reports -->
+					</table>
+				</td>
+				<td valign="top">
+					<!-- Header Start -->
+					<table width="100%" border="0" cellpadding="0" cellspacing="0" ID="Table1">
+						<tr height="18">
+							<td nowrap colspan="2" bgcolor="#EA7125" >&nbsp;&nbsp;<script language="JavaScript" type="text/JavaScript">document.write("<a href=\"LinkPage.htm\" target=\"_blank\">"+_institution+"</a>");</script></td>
+
+							<td bgcolor=#FFFFFF nowrap align="right" rowspan="2" width ='12'><img src="CARESTREAM_LOGO.GIF"  align="absmiddle"></td>
+							<td bgcolor="#EA7125" width ="20"><a href="javascript:CloseAndExit()"><img src='close.gif' width='12' height='12' border='1' align='absmiddle'></a></td>
+							
+						</tr>
+						<tr height="21">
+							<td bgcolor=#FFFFFF  >&nbsp;<span id="spanStdPName"></span>&nbsp;<span id="spanStdPID"></span></td>
+							<td  bgcolor=#FFFFFF align="right"><a id="stdExplorer" href="javascript:switchStudies(-1)">[<img src='Mglass.gif' width='12' height='10' border='0' align='absmiddle'>&nbsp;Studies Explorer]</a></td>
+							<td bgcolor="#EA7125"></td>
+						</tr>
+					</table>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" ID="Table3">
+						<tr bgcolor="#F5F5F5">
+							<td nowrap height="22">&nbsp;
+								<span id="spanStdPSex"></span>&nbsp;
+								Age:
+								<span id="spanStdPAge"></span>
+							<td nowrap>&nbsp;&nbsp;<script language="JavaScript" type="text/JavaScript">document.write(_bpart+" ");</script><span id="spanMod"></span>&nbsp;[<span id="spanStdAccession"></span>]</td>
+							<td nowrap>&nbsp;&nbsp;<span id="spanDate"></span></td>
+
+						</tr>
+					</table>
+
+					<script language="JavaScript" type="text/JavaScript">
+					if (!isSummary && (showMPT || showLTBX))
+					{
+						document.write("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" ID=\"Table12\">");
+						document.write("<tr>");
+						load_link();
+						document.write("</tr>");
+						document.write("<tr>");
+						document.write("<td height='16' nowrap style=\"FONT-WEIGHT: bold; FONT-SIZE: xsmall; \">&nbsp;&nbsp;&nbsp;Select:&nbsp;<a href=\"javascript:CheckAll()\">All</a>,&nbsp;<a href=\"javascript:UncheckAll()\">None</a>");
+						document.write("</td>");
+						document.write("<td width='500px'> </td>");
+						document.write("</tr>");
+						document.write("</table>");
+					}
+					</script>
+					
+					<!-- Header End -->
+					<!-- div instead of frames-->
+					
+							<script language="JavaScript" type="text/JavaScript">
+							// here you can change the rows colors
+							var bgColors = new Array("#F5F5F5","white");
+							
+							//here you can change the small column colors
+							var switchColors = new Array("#83A7DC","#E3EEFF");
+							var stdNum;
+
+							//flags
+							var color;
+							var tdcolor;
+							var imgShow;
+							var align;
+							var stdSeriesImgNum;
+
+							for (stdNum=0;stdNum<intStudies;stdNum++){
+								
+								color=1;
+								tdcolor=1;
+								align=true;
+
+								document.write("<div class='divMain' id='mainDiv"+stdNum+"' style='display: none'><form ID='Form"+stdNum+"'>");
+								var screenWidth = localWidth - image_width[stdNum] - 30;
+								var screenRes=Math.floor((screenWidth-42)/4);
+								document.write("<table align='center' border='0' cellpadding='0' cellspacing='0' ID='Table6' width='"+screenWidth+"'>");
+								
+								for (i=0;i<intSeries[stdNum];i++){
+									stdSeriesImgNum=arrImgPerSeries[stdNum][i];
+									document.write("<tr bgcolor='"+(bgColors[tdcolor])+"'>");
+
+									//create left arrow
+									if (stdSeriesImgNum>screenRes){
+										document.write("<td width='18' rowspan='"+(Math.ceil(stdSeriesImgNum / screenRes)+1)+"'  nowrap >");
+										document.write("<table width='18' border='0' cellspacing='0' cellpadding='0'>");
+										document.write("<tr><td height='16'></td></tr>");
+										document.write("<tr><td height='26' align='center'><a href=\"javascript:cine("+i+")\"><img title=\"Play Cine\" id='cineImage" + stdNum+"s"+i + "' border='0' src='cineplay.jpg'> </a></td></tr>");
+										imgShow=false;
+
+										for (z=0;z<Math.ceil(stdSeriesImgNum / screenRes)-1 ;z++){
+											if (imgShow)
+												document.write("<tr><td height='41' align='right' valign=top><img src='LArrow.gif' width='16' height='41'>&nbsp;</td></tr>");
+											else
+												document.write("<tr><td height='34'>&nbsp;</td></tr>");
+												
+											imgShow=!imgShow;
+										}
+										
+										document.write("</table>");
+										document.write("</td>");
+									}
+									else
+										document.write("<td width='18' rowspan='2' nowrap>&nbsp;<a href=\"javascript:cine("+i+")\"><img title=\"Play Cine\" id='cineImage" + stdNum+"s"+i + "' border='0' src=\"cineplay.jpg\"> </a></td>");
+									document.write("<td height='16' valign='middle' nowrap>");
+
+									if (!isSummary && (showMPT || showLTBX) && nav)
+									{
+										document.write("<input type='checkbox' ID='chk"+stdNum+"s"+i+"' NAME='chk"+stdNum+"s"+i+"' checked='true'>");
+									}
+									document.write("&nbsp;<b>"+arrSeriesDesc[stdNum][i]+"</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>");
+
+									document.write("<td height='16' valign='middle' nowrap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;"+stdSeriesImgNum+" Images&gt;&nbsp;" + arrSeriesMod[stdNum][i] + "&nbsp;&nbsp;&nbsp;&nbsp;</td>");
+									
+									
+									// create right arrow
+									if (stdSeriesImgNum>screenRes){
+										document.write("<td width='19' rowspan='"+(Math.ceil(stdSeriesImgNum / screenRes)+1)+"' align='left' valign='top'><table width='19' border='0' cellspacing='0' cellpadding='0'>");
+										document.write("<tr><td height='16'>&nbsp;</td></tr>");
+										document.write("<tr><td height='19'>&nbsp;</td></tr>");
+
+										imgShow=true;
+
+										if (Math.ceil(stdSeriesImgNum / screenRes)%2==0){
+											//imgShow=false;
+											document.write("<tr><td height='7'></td></tr>");
+										}
+										for (z=0;z<Math.ceil(stdSeriesImgNum / screenRes)-1 ;z++){
+											if (imgShow)
+												document.write("<tr><td height='41' valign=top><img src='RArrow.gif' width='16' height='41'>&nbsp;</td></tr>");
+											else
+												document.write("<tr><td height='34'>&nbsp;</td></tr>");
+												
+											imgShow=!imgShow;
+										}
+											
+										document.write("</table></td>");
+									}
+									else
+										document.write("<td width='19' rowspan='2'>&nbsp;</td>");
+									
+									document.write("</tr>");
+
+									document.write("<tr bgcolor='"+(bgColors[tdcolor])+"'>");
+
+									document.write("<td height=39 colspan=2 valign=top align=left width="+(4*screenRes)+">");
+									document.write("<TABLE cellpadding=0 cellspacing=0 id='tblRollOver"+stdNum+i+"0'><TR>");
+									
+									
+									// creates the coloumns
+									align=true;
+									color=0;
+									for (j=0;j<stdSeriesImgNum;j++){
+										if (j%screenRes==0 && j>0){
+											//(color==1)?color=0:color=1;
+											document.write("</tr></table></td></tr><tr bgcolor='"+bgColors[tdcolor]+"'><td width="+(4*screenRes)+" height=39 colspan=2 valign=top ");
+											if (align){
+												document.write("align=right><TABLE cellpadding=0 cellspacing=0 dir=rtl id='tblRollOver"+stdNum+i+(j/screenRes)+"' ><TR>");
+												//(color==1)?color=0:color=1;
+											}
+											else
+												document.write("align=left><TABLE cellpadding=0 cellspacing=0  id='tblRollOver"+stdNum+i+(j/screenRes)+"'><TR>");
+
+											align=!align;
+											
+										}
+													
+										document.write("<TD height='32' width='4' style='background: "+(switchColors[color])+"' onMouseWheel='mouseWheel()' onMouseOver='mouseOver("+i+","+j+")'>");
+										(color==1)?color=0:color=1;
+										
+										document.write("&nbsp;</TD>");
+									}
+									document.write("</TR></TABLE></td>");
+									
+									document.write("</tr>");
+									(tdcolor==1)?tdcolor=0:tdcolor=1;
+								}
+								
+								document.write("</table>");
+								
+								if (!isSummary && (showMPT || showLTBX))
+								{
+									document.write("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" ID=\"Table112\">");
+
+									document.write("<tr>");
+									document.write("<td height='16' nowrap style=\"FONT-WEIGHT: bold; FONT-SIZE: xsmall; \">&nbsp;&nbsp;&nbsp;Select:&nbsp;<a href=\"javascript:CheckAll()\">All</a>,&nbsp;<a href=\"javascript:UncheckAll()\">None</a>");
+									document.write("</td>");
+									document.write("<td width='500px'> </td>");
+									document.write("</tr>");
+
+										document.write("<tr>");
+										load_link();
+										document.write("</tr>");
+
+									document.write("</table>");
+								}
+								document.write("</form></div>");
+							}
+								</script>
+							
+				</td>
+			</tr>
+		</table>
+	</body>
+		
+</html>
